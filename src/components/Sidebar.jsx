@@ -51,7 +51,7 @@ const Sidebar = () => {
   ];
 
   return (
-    <aside className="w-[320px] p-5 space-y-4" style={{ backgroundColor: '#FAF8F5' }}>
+    <aside className="w-[280px] p-3 space-y-3 overflow-y-auto flex-shrink-0" style={{ backgroundColor: '#FAF8F5' }}>
       {/* Projects Card */}
       <div className="sidebar-card">
         <div className="flex items-center gap-3 mb-3">

@@ -14,11 +14,11 @@ function App() {
 
   return (
     <Router>
-      <div className="min-h-screen" style={{ backgroundColor: '#FAF8F5' }}>
+      <div className="h-screen flex flex-col overflow-hidden" style={{ backgroundColor: '#FAF8F5' }}>
         <Header activeTab={activeTab} setActiveTab={setActiveTab} />
-        <div className="flex">
+        <div className="flex flex-1 overflow-hidden">
           <Sidebar />
-          <main className="flex-1 p-4" style={{ backgroundColor: '#FAF8F5' }}>
+          <main className="flex-1 p-4 overflow-auto" style={{ backgroundColor: '#FAF8F5' }}>
             <Routes>
               <Route path="/" element={<ValueDrivers />} />
               <Route path="/value-drivers" element={<ValueDrivers />} />
@@ -29,7 +29,7 @@ function App() {
             </Routes>
           </main>
         </div>
-        <Chatbot />
+        <Chatbot activeTab={activeTab} />
       </div>
     </Router>
   );
