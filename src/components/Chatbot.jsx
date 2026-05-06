@@ -6,7 +6,7 @@ const Chatbot = ({ activeTab }) => {
   const [messages, setMessages] = useState([
     {
       role: 'bot',
-      text: "Hello! I'm your Portfolio Intelligence Assistant.\n\nI have full context of your dashboard data — ask me anything about projects, risks, costs, domains, or strategic recommendations."
+      text: "Hello! I'm your Portfolio Intelligence Assistant.\n\nAsk me anything about projects, risks, costs, domains, or strategic recommendations."
     }
   ]);
   const [input, setInput] = useState('');
