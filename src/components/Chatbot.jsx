@@ -1,6 +1,13 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { askBot } from '../utils/chatbotLogic';
 
+const SUGGESTIONS = [
+  { label: 'Top 3 by Planned Cost', query: 'Top 3 Project having the highest planned cost?' },
+  { label: 'Top 3 by Net Impact', query: 'Top 3 Project having the highest Net Impact?' },
+  { label: 'Cost Risk Count', query: 'How many projects are currently at risk for cost drift?' },
+  { label: 'Timeline Risk Count', query: 'How many projects are currently at risk for Timeline drift?' },
+];
+
 const Chatbot = ({ activeTab }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState([
@@ -11,8 +18,10 @@ const Chatbot = ({ activeTab }) => {
   ]);
   const [input, setInput] = useState('');
   const [isTyping, setIsTyping] = useState(false);
+  const [showSuggestions, setShowSuggestions] = useState(false);
   const scrollRef = useRef(null);
   const inputRef = useRef(null);
+  const suggestionsRef = useRef(null);
 
   useEffect(() => {
     if (scrollRef.current) {
@@ -31,6 +40,7 @@ const Chatbot = ({ activeTab }) => {
     const userMsg = { role: 'user', text };
     setMessages((prev) => [...prev, userMsg]);
     setInput('');
+    setShowSuggestions(false);
     setIsTyping(true);
 
     try {
@@ -182,6 +192,7 @@ const Chatbot = ({ activeTab }) => {
                             <span className="text-[12px] font-medium" style={{ color: '#5E0A1F' }}>{msg.recommendation}</span>
                           </div>
                         )}
+
                       </div>
                     ) : (
                       <div className="max-w-[80%] px-4 py-2.5 rounded-2xl rounded-br-sm text-[13px]"
@@ -214,7 +225,7 @@ const Chatbot = ({ activeTab }) => {
 
             {/* Input */}
             <div className="px-4 py-3 bg-white flex-shrink-0" style={{ borderTop: '1px solid #F0EDE8' }}>
-              <div className="flex items-center gap-2 bg-gray-50 rounded-2xl px-4 py-1" style={{ border: '1px solid #E8E4DF' }}>
+              <div className="flex items-center gap-2 bg-gray-50 rounded-2xl px-3 py-1 relative" style={{ border: '1px solid #E8E4DF' }} ref={suggestionsRef}>
                 <input
                   ref={inputRef}
                   value={input}
@@ -224,6 +235,17 @@ const Chatbot = ({ activeTab }) => {
                   disabled={isTyping}
                   className="flex-1 text-[13px] py-2.5 outline-none bg-transparent placeholder-gray-400"
                 />
+                <button
+                  onClick={() => setShowSuggestions((s) => !s)}
+                  disabled={isTyping}
+                  className="w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0 transition-all duration-200"
+                  style={{ background: isTyping ? '#E5E5E5' : 'rgba(94, 10, 31, 0.08)' }}
+                  title="Suggested questions"
+                >
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#5E0A1F" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ transform: showSuggestions ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s' }}>
+                    <polyline points="6 9 12 15 18 9" />
+                  </svg>
+                </button>
                 <button
                   onClick={() => handleSend()}
                   disabled={!input.trim() || isTyping}
@@ -238,6 +260,29 @@ const Chatbot = ({ activeTab }) => {
                     <polygon points="22 2 15 22 11 13 2 9 22 2" />
                   </svg>
                 </button>
+
+                {/* Suggestions Dropdown */}
+                {showSuggestions && (
+                  <div 
+                    className="absolute right-0 bottom-[calc(100%+6px)] w-[320px] bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden"
+                    style={{ zIndex: 50 }}
+                  >
+                    <div className="px-3 py-2 text-[10px] font-semibold uppercase tracking-wider text-gray-400 bg-gray-50 border-b border-gray-100">
+                      Suggested Questions
+                    </div>
+                    <div className="max-h-[200px] overflow-y-auto">
+                      {SUGGESTIONS.map((s, idx) => (
+                        <button
+                          key={idx}
+                          onClick={() => { handleSend(s.query); setShowSuggestions(false); }}
+                          className="w-full text-left px-3 py-2.5 text-[12px] text-gray-700 hover:bg-gray-50 transition-colors border-b border-gray-50 last:border-0"
+                        >
+                          {s.query}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
               <div className="text-center mt-2">
                 <span className="text-[9px] text-gray-300">Powered by Groq • LLaMA 3.3</span>
